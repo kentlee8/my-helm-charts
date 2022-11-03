@@ -1,0 +1,24 @@
+{{- if .Values.policyValidator.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "policy-validator.fullname" . }}
+  labels:
+    {{- include "policy-validator.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation
+data:
+  NEXTLABS_PV_CC_URL: https://{{ .Values.nextlabs.cc.dnsName }}
+  NEXTLABS_PV_HEALTHCHECK_PORT: "8888"
+  NEXTLABS_PV_PORT: "8443"
+  NEXTLABS_PV_URL: https://{{ .Values.nextlabs.cc.dnsName }}/policy-validator
+  NEXTLABS_PV_OIDC_TOKENURL: https://{{ .Release.Name }}-nextlabs-control-center-management-server:4443
+  NEXTLABS_PV_PDP_PROTOCOL: https
+  NEXTLABS_PV_PDP_HOST: {{ .Release.Name }}-nextlabs-policy-controller-java
+  NEXTLABS_PV_PDP_PORT: "8443"
+  NEXTLABS_PV_CC_HOST: {{ .Release.Name }}-nextlabs-control-center-management-server
+  NEXTLABS_PV_CC_PORT: "4443"
+  NEXTLABS_PV_DEFAULTCONFIGURATION: production
+{{- end }}
