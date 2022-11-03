@@ -115,11 +115,14 @@ tls.key: {{ $cert.Key | b64enc }}
 {{- $ccCert := genSignedCert (printf "%s-nextlabs-control-center-management-server" .Release.Name) nil nil 1825 $ca -}}
 {{- $webCert := genSignedCert (printf "%s-nextlabs-control-center-management-server" .Release.Name) nil nil 1825 $ca -}}
 {{- $jpcCert := genSignedCert (printf "%s-nextlabs-policy-controller-java" .Release.Name) nil nil 1825 $ca -}}
+{{- $pvCert := genSignedCert (printf "%s-nextlabs-policy-validator" .Release.Name) nil nil 1825 $ca -}}
 nextlabs.cc.ssl.ccKeyPairStore.certificate: {{ $ccCert.Cert | b64enc }}
 nextlabs.cc.ssl.ccKeyPairStore.key: {{ $ccCert.Key | b64enc }}
 nextlabs.cc.ssl.webKeyPairStore.certificate: {{ $webCert.Cert | b64enc }}
 nextlabs.cc.ssl.webKeyPairStore.key: {{ $webCert.Key | b64enc }}
 nextlabs.jpc.tls.certificate: {{ $jpcCert.Cert | b64enc }}
 nextlabs.jpc.tls.key: {{ $jpcCert.Key | b64enc }}
+nextlabs.pv.tls.certificate: {{ $pvCert.Cert | b64enc }}
+nextlabs.pv.tls.key: {{ $pvCert.Key | b64enc }}
 {{- end -}}
 
