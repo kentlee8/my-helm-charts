@@ -1,7 +1,7 @@
 apiVersion: v2
-appVersion: "2022.08"
+appVersion: "2022.05"
 description: NextLabs Control Center
 icon: https://www.nextlabs.com/wp-content/uploads/2018/09/ico-control.png
 name: nextlabs-control-center
 type: application
-version: "2022.08"
+version: "2022.05"

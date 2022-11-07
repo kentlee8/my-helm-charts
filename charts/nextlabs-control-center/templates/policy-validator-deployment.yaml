@@ -66,16 +66,6 @@ spec:
             secretKeyRef:
               name: {{ include "control-center.fullname" . }}
               key: nextlabs.cc.ssl.webKeyPairStore.certificate
-        - name: NEXTLABS_PV_TLS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "control-center.fullname" . }}
-              key: nextlabs.pv.tls.key
-        - name: NEXTLABS_PV_TLS_CERTIFICATE
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "control-center.fullname" . }}
-              key: nextlabs.pv.tls.certificate
       {{- if .Values.nextlabs.cc.policyValidatorDataVolumeClaimName }}
       volumes:
       - name: policy-validator-data
