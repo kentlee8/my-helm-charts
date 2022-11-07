@@ -1,0 +1,341 @@
+categories:
+- NextLabs
+
+questions:
+- variable: nextlabs.cc.license
+  type: string
+  required: true
+  label: Base64 Encoded License
+  description: The base64 encoded license file.
+  group: License
+
+- variable: image.repository
+  type: string
+  required: true
+  default: registry.nextlabs.com/platform
+  label: Repository
+  description: Container image registry.
+  group: Container Images
+- variable: image.pullPolicy
+  type: enum
+  options:
+  - Always
+  - IfNotPresent
+  - Never
+  required: true
+  default: Always
+  label: Image Pull Policy
+  description: Container image pull policy.
+  group: Container Images
+- variable: image.imagePullSecret
+  type: string
+  required: false
+  default: nextlabs-registry-credentials
+  label: Image Pull Secret
+  description: Image pull secret contains credentials for accessing the container image registry.
+  group: Container Images
+
+- variable: nextlabs.cc.db.url
+  type: string
+  required: true
+  default: jdbc:postgresql://cc-db-hostname:5432/ccdb
+  label: Database URL
+  description: The database JDBC URL.
+  group: Database Settings
+- variable: nextlabs.cc.db.username
+  type: string
+  required: true
+  default: ccdbuser
+  label: Database Username
+  description: The database server username.
+  group: Database Settings
+- variable: nextlabs.cc.db.password
+  type: password
+  required: true
+  label: Database Password
+  description: The database server password.
+  group: Database Settings
+- variable: nextlabs.cc.db.retryAttempts
+  type: int
+  required: true
+  default: 5
+  label: Database Connection Retry Attempts
+  description: Perform the specified number of retry attempts if the database connection fails.
+  group: Database Settings
+
+- variable: nextlabs.cc.adminPassword
+  type: password
+  required: true
+  label: Initial Admin Password
+  description: The initial password for the built-in Administrator account.
+  group: Security
+- variable: nextlabs.cc.ssl.keystore.password
+  type: password
+  required: true
+  label: Key Store Password
+  description: The keystore password for the Control Center server.
+  group: Security
+- variable: nextlabs.cc.ssl.truststore.password
+  type: password
+  required: true
+  label: Trust Store Password
+  description: The truststore password for the Control Center server.
+  group: Security
+- variable: securityContext.runAsUser
+  type: int
+  required: true
+  default:
+  label: Security Context Run as User ID
+  description: All processes in Control Center containers will run using this user id.
+  group: Security
+- variable: securityContext.fsGroup
+  type: int
+  required: true
+  default:
+  label: Security Context Run as Group ID
+  description: All processes in Control Center containers are also part of this group id.
+  group: Security
+
+- variable: service.type
+  type: enum
+  options:
+  - ClusterIP
+  - NodePort
+  required: true
+  default: ClusterIP
+  label: Service Type
+  description: How the services are exposed.
+  group: Access
+- variable: ingress.enabled
+  type: boolean
+  required: true
+  default: true
+  label: Enable Ingress
+  description: Enable / Disable ingress.
+  group: Access
+  show_subquestion_if: true
+  subquestions:
+  - variable: ingress.tls.enabled
+    type: boolean
+    required: true
+    default: true
+    label: Enable TLS
+    description: Enable/Disable Ingress TLS.
+    group: Access
+  - variable: ingress.tls.secretName
+    type: string
+    required: false
+    label: TLS Secret Name
+    description: Secret of type kubernetes.io/tls specifying TLS key and certificate.
+    group: Access
+- variable: nextlabs.cc.dnsName
+  type: string
+  required: true
+  label: Domain Name
+  description: The external name for accessing services.
+  group: Access
+- variable: nextlabs.cc.port.externalPort
+  type: int
+  required: true
+  default: 443
+  label: Port
+  description: The external port for accessing services.
+  group: Access
+- variable: ingress.icenet.enabled
+  type: boolean
+  required: true
+  default: false
+  label: Enable Access to Control Center ICENet
+  description: Enable/Disable access to Control Center ICENet. You may also need to enable TLS Passthrough in the Ingress Controller to access ICENet.
+  group: Access
+  show_subquestion_if: true
+  subquestions:
+  - variable: nextlabs.cc.icenet.dnsName
+    type: string
+    required: true
+    label: Control Center ICENet Domain Name
+    description: The external name for accessing Control Center ICENet.
+    group: Access
+
+- variable: nextlabs.cc.enrolledDataVolumeClaimName
+  type: string
+  required: false
+  label: Enrolled Data Volume Claim Name
+  description: Volume claim to persist LDIF enrollment data files. Not required if you do not want to persist LDIF enrollment data files.
+  group: Volumes
+- variable: nextlabs.cc.logsVolumeClaimName
+  type: string
+  required: false
+  label: Logs Volume Claim Name
+  description: Volume claim to persist application log files. Not required if you do not want to persist logs.
+  group: Volumes
+- variable: nextlabs.cc.policyValidatorDataVolumeClaimName
+  type: string
+  required: false
+  label: Policy Validator Data Volume Claim Name
+  description: Volume claim to persist Policy Validator data. Not required if you do not want to persist Policy Validator data files.
+  group: Volumes
+
+- variable: nextlabs.cc.ssl.cacerts.cert1
+  type: string
+  required: false
+  label: CA Certificate 1
+  description: A Base64 encoded CA certificate file (for example, TLS database certificate) to be imported. Required only if Control Center communicates with external TLS services.
+  group: CA Certificates
+- variable: nextlabs.cc.ssl.cacerts.cert2
+  type: string
+  required: false
+  label: CA Certificate 2
+  description: A Base64 encoded CA certificate file (for example, TLS database certificate) to be imported. Required only if Control Center communicates with external TLS services.
+  group: CA Certificates
+- variable: nextlabs.cc.ssl.cacerts.cert3
+  type: string
+  required: false
+  label: CA Certificate 3
+  description: A Base64 encoded CA certificate file (for example, TLS database certificate) to be imported. Required only if Control Center communicates with external TLS services.
+  group: CA Certificates
+- variable: nextlabs.cc.ssl.cacerts.cert4
+  type: string
+  required: false
+  label: CA Certificate 4
+  description: A Base64 encoded CA certificate file (for example, TLS database certificate) to be imported. Required only if Control Center communicates with external TLS services.
+  group: CA Certificates
+
+- variable: managementServer.resources.requests.cpu
+  type: string
+  required: true
+  default: 200m
+  label: CPU(s) Request
+  description: CPU(s) Request
+  group: Management Server Resources
+- variable: managementServer.resources.requests.memory
+  type: string
+  required: true
+  default: 6Gi
+  label: Memory Request
+  description: Memory Request
+  group: Management Server Resources
+- variable: managementServer.resources.limits.cpu
+  type: string
+  required: true
+  default: 1
+  label: CPU(s) Limit
+  description: CPU(s) Limit
+  group: Management Server Resources
+- variable: managementServer.resources.limits.memory
+  type: string
+  required: true
+  default: 6Gi
+  label: Memory Limit
+  description: Memory Limit
+  group: Management Server Resources
+
+- variable: icenet.replicas
+  type: int
+  required: true
+  default: 1
+  label: Replicas
+  description: Replicas
+  group: ICENet Server Resources
+- variable: icenet.resources.requests.cpu
+  type: string
+  required: true
+  default: 200m
+  label: CPU(s) Request
+  description: CPU(s) Request
+  group: ICENet Server Resources
+- variable: icenet.resources.requests.memory
+  type: string
+  required: true
+  default: 1Gi
+  label: Memory Request
+  description: Memory Request
+  group: ICENet Server Resources
+- variable: icenet.resources.limits.cpu
+  type: string
+  required: true
+  default: 1
+  label: CPU(s) Limit
+  description: CPU(s) Limit
+  group: ICENet Server Resources
+- variable: icenet.resources.limits.memory
+  type: string
+  required: true
+  default: 2Gi
+  label: Memory Limit
+  description: Memory Limit
+  group: ICENet Server Resources
+
+- variable: policyController.replicas
+  type: int
+  required: true
+  default: 1
+  label: Replicas
+  description: Replicas
+  group: Policy Controller Resources
+- variable: policyController.resources.requests.cpu
+  type: string
+  required: true
+  default: 200m
+  label: CPU(s) Request
+  description: CPU(s) Request
+  group: Policy Controller Resources
+- variable: policyController.resources.requests.memory
+  type: string
+  required: true
+  default: 512Mi
+  label: Memory Request
+  description: Memory Request
+  group: Policy Controller Resources
+- variable: policyController.resources.limits.cpu
+  type: string
+  required: true
+  default: 1
+  label: CPU(s) Limit
+  description: CPU(s) Limit
+  group: Policy Controller Resources
+- variable: policyController.resources.limits.memory
+  type: string
+  required: true
+  default: 2Gi
+  label: Memory Limit
+  description: Memory Limit
+  group: Policy Controller Resources
+
+- variable: policyValidator.enabled
+  type: boolean
+  required: true
+  default: false
+  label: Enable Policy Validator
+  description: Enable/Disable Policy Validator.
+  group: Policy Validator Resources
+  show_subquestion_if: true
+  subquestions:
+  - variable: policyValidator.resources.requests.cpu
+    type: string
+    required: true
+    default: 200m
+    label: CPU(s) Request
+    description: CPU(s) Request
+    group: Policy Validator Resources
+  - variable: policyValidator.resources.requests.memory
+    type: string
+    required: true
+    default: 256Mi
+    label: Memory Request
+    description: Memory Request
+    group: Policy Validator Resources
+  - variable: policyValidator.resources.limits.cpu
+    type: string
+    required: true
+    default: 500m
+    label: CPU(s) Limit
+    description: CPU(s) Limit
+    group: Policy Validator Resources
+  - variable: policyValidator.resources.limits.memory
+    type: string
+    required: true
+    default: 512Mi
+    label: Memory Limit
+    description: Memory Limit
+    group: Policy Validator Resources

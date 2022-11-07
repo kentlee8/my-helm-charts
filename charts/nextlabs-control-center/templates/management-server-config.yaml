@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "management-server.fullname" . }}
+  labels:
+    {{- include "management-server.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation
+data:
+  NEXTLABS_CC_ADMINISTRATOR_CAS_SERVICE_URL: https://{{ .Release.Name }}-nextlabs-control-center-management-server:4443/cas
+  {{- if eq (default .Values.nextlabs.cc.port.externalPort 443) 443 }}
+  NEXTLABS_CC_APPLICATION_CCOIDCCONFIG_SERVICES_1_SERVICEID: https://{{ .Values.nextlabs.cc.dnsName }}/policy-validator/authorization-code/callback
+  {{- else }}
+  NEXTLABS_CC_APPLICATION_CCOIDCCONFIG_SERVICES_1_SERVICEID: https://{{ .Values.nextlabs.cc.dnsName }}:{{ .Values.nextlabs.cc.port.externalPort }}/policy-validator/authorization-code/callback
+  {{- end }}
+  NEXTLABS_CC_APPHOME_SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: https://{{ .Release.Name }}-nextlabs-control-center-management-server:4443/cas/oidc/jwks
+  NEXTLABS_CC_COMMPROFILE_DABSLOCATION: https://{{ .Release.Name }}-nextlabs-control-center-icenet:8443/dabs
+  NEXTLABS_CC_COMMPROFILE_HEARTBEATFREQTIME: {{ .Values.nextlabs.cc.commProfile.heartBeatFreqTime | quote }}
+  NEXTLABS_CC_COMMPROFILE_HEARTBEATFREQTIMEUNIT: {{ .Values.nextlabs.cc.commProfile.heartBeatFreqTimeUnit | quote }}
+  NEXTLABS_CC_COMMPROFILE_PUSHENABLED: {{ .Values.nextlabs.cc.commProfile.pushEnabled | quote }}
+  NEXTLABS_CC_CONSOLE_CAS_SERVICE_URL: https://{{ .Release.Name }}-nextlabs-control-center-management-server:4443/cas
+  NEXTLABS_CC_DB_RETRYATTEMPTS: {{ .Values.nextlabs.cc.db.retryAttempts | quote }}
+  NEXTLABS_CC_DNSNAME: {{ .Values.nextlabs.cc.dnsName | quote }}
+  NEXTLABS_CC_ENVIRONMENT: CONTAINER
+  NEXTLABS_CC_MANAGEMENTSERVER_HOST: {{ .Release.Name }}-nextlabs-control-center-management-server
+  {{- if eq (default .Values.nextlabs.cc.port.externalPort 443) 443 }}
+  NEXTLABS_CC_CONSOLE_POLICYVALIDATOR_URL: https://{{ .Values.nextlabs.cc.dnsName }}/policy-validator
+  {{- else }}
+  NEXTLABS_CC_CONSOLE_POLICYVALIDATOR_URL: https://{{ .Values.nextlabs.cc.dnsName }}:{{ .Values.nextlabs.cc.port.externalPort }}/policy-validator
+  {{- end }}
+  NEXTLABS_CC_POLICYCONTROLLERMANAGER_SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: https://{{ .Release.Name }}-nextlabs-control-center-management-server:4443/cas/oidc/jwks
+  NEXTLABS_CC_PORT_APPSERVICEPORT: "4443"
+  NEXTLABS_CC_PORT_EXTERNALPORT: {{ .Values.nextlabs.cc.port.externalPort | quote }}
+  NEXTLABS_CC_REPORTER_CAS_SERVICE_URL: https://{{ .Release.Name }}-nextlabs-control-center-management-server:4443/cas
+  NEXTLABS_CC_SERVICEMANAGER_SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: https://{{ .Release.Name }}-nextlabs-control-center-management-server:4443/cas/oidc/jwks
+  NEXTLABS_CC_SERVICENAME: {{ .Release.Name }}-nextlabs-control-center-management-server
+  NEXTLABS_CC_SSL_CACERTS_0_ALIAS: control_center
+  {{- if .Values.nextlabs.cc.ssl.cacerts.cert1 }}
+  NEXTLABS_CC_SSL_CACERTS_1_ALIAS: cacert_1
+  NEXTLABS_CC_SSL_CACERTS_1_CONTENT: {{ .Values.nextlabs.cc.ssl.cacerts.cert1 | quote }}
+  {{- end }}
+  {{- if .Values.nextlabs.cc.ssl.cacerts.cert2_content }}
+  NEXTLABS_CC_SSL_CACERTS_2_ALIAS: cacert_2
+  NEXTLABS_CC_SSL_CACERTS_2_CONTENT: {{ .Values.nextlabs.cc.ssl.cacerts.cert2_content | quote }}
+  {{- end }}
+  {{- if .Values.nextlabs.cc.ssl.cacerts.cert3_content }}
+  NEXTLABS_CC_SSL_CACERTS_3_ALIAS: cacert_3
+  NEXTLABS_CC_SSL_CACERTS_3_CONTENT: {{ .Values.nextlabs.cc.ssl.cacerts.cert3_content | quote }}
+  {{- end }}
+  {{- if .Values.nextlabs.cc.ssl.cacerts.cert4_content }}
+  NEXTLABS_CC_SSL_CACERTS_4_ALIAS: cacert_4
+  NEXTLABS_CC_SSL_CACERTS_4_CONTENT: {{ .Values.nextlabs.cc.ssl.cacerts.cert4_content | quote }}
+  {{- end }}
+  NEXTLABS_CC_SSL_WEBCERTCN: {{ .Release.Name }}-nextlabs-control-center-management-server
+  NEXTLABS_CC_TYPE: MANAGEMENT_SERVER
+

@@ -2,25 +2,14 @@ apiVersion: v1
 entries:
   nextlabs-control-center:
   - apiVersion: v2
-    appVersion: "2022.08"
-    created: "2022-11-07T12:09:21.644218574+08:00"
-    description: NextLabs Control Center
-    digest: d9a7a037b5763f562761f7032eb54ab46c5bc29dfe37213a42867368bf965a4a
-    icon: https://www.nextlabs.com/wp-content/uploads/2018/09/ico-control.png
-    name: nextlabs-control-center
-    type: application
-    urls:
-    - https://kentlee8.github.io/my-helm-charts/nextlabs-control-center-2022.08.tgz
-    version: "2022.08"
-  - apiVersion: v2
     appVersion: "2022.05"
-    created: "2022-11-07T12:09:21.643500468+08:00"
+    created: "2022-11-07T12:44:55.003280421+08:00"
     description: NextLabs Control Center
-    digest: 57487e186474296fe703e8d445ac786d186770928ff96629db13b31faf64928b
+    digest: 98a084693af5b32f38e7713bbebcd3092682d7a96b05faaa2ab9beb0ac23f283
     icon: https://www.nextlabs.com/wp-content/uploads/2018/09/ico-control.png
     name: nextlabs-control-center
     type: application
     urls:
     - https://kentlee8.github.io/my-helm-charts/nextlabs-control-center-2022.05.tgz
     version: "2022.05"
-generated: "2022-11-07T12:09:21.642911854+08:00"
+generated: "2022-11-07T12:44:55.002611366+08:00"

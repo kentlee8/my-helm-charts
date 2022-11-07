@@ -1,0 +1,75 @@
+{{- if .Values.policyValidator.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "policy-validator.fullname" . }}
+  labels:
+    {{- include "policy-validator.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "policy-validator.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "policy-validator.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.image.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.image.imagePullSecret }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}/nextlabs-policy-validator:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http-{{ .Release.Name }}-v
+          containerPort: 8443
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: 8888
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 8888
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+        startupProbe:
+          httpGet:
+            path: /index.html
+            port: 8888
+          failureThreshold: 60
+          periodSeconds: 30
+          timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.nextlabs.cc.policyValidatorDataVolumeClaimName }}
+        volumeMounts:
+        - name: policy-validator-data
+          mountPath: /opt/policyvalidator/data
+        {{- end }}
+        envFrom:
+        - configMapRef:
+            name: {{ include "policy-validator.fullname" . }}
+        env:
+        - name: NEXTLABS_PV_OIDC_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "control-center.fullname" . }}
+              key: nextlabs.cc.policyValidator.oidcClientSecret
+        - name: NEXTLABS_PV_SSL_CC_CERTIFICATE
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "control-center.fullname" . }}
+              key: nextlabs.cc.ssl.webKeyPairStore.certificate
+      {{- if .Values.nextlabs.cc.policyValidatorDataVolumeClaimName }}
+      volumes:
+      - name: policy-validator-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.nextlabs.cc.policyValidatorDataVolumeClaimName }}
+      {{- end }}
+{{- end }}
